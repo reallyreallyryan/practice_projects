@@ -9,3 +9,9 @@ Second, tried to add "square root", I believe IOT do so i'd have to write out th
 
 Finally, implemented a "back" button. This allows you to remove the numbers you've entered but keep the previous selections.
 Last note: Mac doesn't support background colors on buttons, apparently. 
+
+
+Update:
+Learned more on how to have python perform equations. 
+Added additional buttons to the calculator: square root, power to. 
+Also have different outcome for square root in the way it interacts. 
