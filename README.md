@@ -1,3 +1,3 @@
 #
 #Working to learn Python through courses online, tutorials, and projects.
-#Ideally, this will show my progression.
+#This repository in particular will focus on gui and game designs.
