@@ -9,6 +9,7 @@ def sub_mission():
     global sub_options_gi
     global sub_options_nogi
     global pos_options
+    
     #counter for subs completed
     counter = 0
     #lists of gi/ no gi/ position options
@@ -51,7 +52,7 @@ def sub_mission():
         global sub_options_gi
         global sub_options_nogi
         global pos_options
-        global pos_choice
+        
         #establish new random choices for ongoing loop
         new_gi_choice = random.choice(sub_options_gi)
         new_nogi_choice = random.choice(sub_options_nogi)
