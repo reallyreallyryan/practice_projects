@@ -1,4 +1,5 @@
-#BJJ Sub Mission
+#BJJ Sub Mission.
+
 Working to learn Python through courses online, tutorials, and projects.
 I developed a script that will ask you whether what type of BJJ you're doing.
 Then, script will choose a random sub and position based off of your choice.
