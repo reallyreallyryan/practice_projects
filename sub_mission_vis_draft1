@@ -1,0 +1,230 @@
+from tkinter import *
+import random
+import sys
+
+root = Tk()
+root.title("BJJ Sub Mission")
+root.geometry("400x150")
+
+#starts the gi branch of program
+def play_gi():
+    global counter
+    global user
+    global sub_options_gi
+    global pos_options
+    global gi_choice
+    global pos_choice
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    #forget start widgets
+    start_label.pack_forget()
+    start_button_gi.pack_forget()
+    start_button_nogi.pack_forget()
+    #counter for subs completed
+    counter = 0
+    #lists of gi/ position options
+    sub_options_gi = ['kneebar', 'armbar', 'bow and arrow', 'collar choke']
+    pos_options = ['side control', 'mount', 'back', 'guard']
+    #get randcom choice from lists
+    gi_choice = random.choice(sub_options_gi)
+    pos_choice = random.choice(pos_options)
+    # asks for user, chooses 1 of 3 options
+    first_sub = Label(root, text= "Your sub mission is: " + str(gi_choice) + " from " + str(pos_choice))
+    query = Label(root, text="Did you complete your mission?")
+    yes_button = Button(root, text="Yes", command=play_again_gi)
+    no_button = Button(root, text="No", command= end_game)
+
+    #put new widgets on screen
+    first_sub.pack()
+    query.pack()
+    yes_button.pack()
+    no_button.pack()
+
+def play_nogi():
+    global counter
+    global user
+    global sub_options_nogi
+    global pos_options
+    global nogi_choice
+    global pos_choice
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    #forget start widgets
+    start_label.pack_forget()
+    start_button_gi.pack_forget()
+    start_button_nogi.pack_forget()
+    #counter for subs completed
+    counter = 0
+    #lists of gi/ position options
+    sub_options_nogi = ['triangle', 'arm triangle', 'darce', 'americana']
+    pos_options = ['side control', 'mount', 'back', 'guard']
+    #get randcom choice from lists
+    nogi_choice = random.choice(sub_options_nogi)
+    pos_choice = random.choice(pos_options)
+    # asks for user, chooses 1 of 3 options
+    first_sub = Label(root, text= "Your sub mission is: " + str(nogi_choice) + " from " + str(pos_choice))
+    query = Label(root, text="Did you complete your mission?")
+    yes_button = Button(root, text="Yes", command=play_again_nogi)
+    no_button = Button(root, text="No", command= end_game)
+
+    #put new widgets on screen
+    first_sub.pack()
+    query.pack()
+    yes_button.pack()
+    no_button.pack()
+
+#function asks to play again for gi
+def play_again_gi():
+    global counter
+    global user
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    global result
+    global play_again_button
+    global leave_button
+    #user was succesful, increase counter
+    counter += 1
+    #remove widgets from window
+    first_sub.pack_forget()
+    query.pack_forget()
+    yes_button.pack_forget()
+    no_button.pack_forget()
+    #Create Widgets
+    result = Label(root, text="You completed " + str(counter) + " sub missions.")
+    play_again_button = Button(root, text="Play Again?",command=gi_replay)
+    leave_button = Button(root, text="I'll Pass.", command= end_game)
+    win_label = Label(root, text="You've Completed " + str(counter) + " Sub missions.\nYou Won!")
+    if counter >= 4:
+        win_label.pack()
+    #Place Widgets on Screen
+    else:
+        result.pack()
+        play_again_button.pack()
+        leave_button.pack()
+
+def play_again_nogi():
+    global counter
+    global user
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    global result
+    global play_again_button
+    global leave_button
+    #user was succesful, increase counter
+    counter += 1
+    #remove widgets from window
+    first_sub.pack_forget()
+    query.pack_forget()
+    yes_button.pack_forget()
+    no_button.pack_forget()
+    #Create Widgets
+    result = Label(root, text="You completed " + str(counter) + " sub missions.")
+    play_again_button = Button(root, text="Play Again?",command=nogi_replay)
+    leave_button = Button(root, text="I'll Pass.", command= end_game)
+    win_label = Label(root, text="You've Completed " + str(counter) + " Sub Missions.\nYou Won!")
+    if counter >= 4:
+        win_label.pack()
+    #Place Widgets on Screen
+    else:
+        result.pack()
+        play_again_button.pack()
+        leave_button.pack()
+
+
+def gi_replay():
+    global user
+    global sub_options_gi
+    global pos_options
+    global gi_choice
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    global result
+    global play_again_button
+    global leave_button
+
+    result.pack_forget()
+    first_sub.pack_forget()
+    play_again_button.pack_forget()
+    leave_button.pack_forget()
+
+    sub_options_gi = ['kneebar', 'armbar', 'bow and arrow', 'collar choke']
+    pos_options = ['side control', 'mount', 'back', 'guard']
+    gi_choice = random.choice(sub_options_gi)
+    pos_choice = random.choice(pos_options)
+
+    first_sub = Label(root, text= "Your next sub mission is: " + str(gi_choice) +
+                                  " from " + str(pos_choice) +"\nDid you complete it?")
+
+    first_sub.pack()
+    yes_button.pack()
+    no_button.pack()
+
+def nogi_replay():
+    global user
+    global sub_options_nogi
+    global pos_options
+    global nogi_choice
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    global result
+    global play_again_button
+    global leave_button
+
+    result.pack_forget()
+    first_sub.pack_forget()
+    play_again_button.pack_forget()
+    leave_button.pack_forget()
+
+    sub_options_nogi = ['triangle', 'arm triangle', 'darce', 'americana']
+    pos_options = ['side control', 'mount', 'back', 'guard']
+    nogi_choice = random.choice(sub_options_nogi)
+    pos_choice = random.choice(pos_options)
+
+    first_sub = Label(root, text= "Your next sub mission is: " + str(nogi_choice) +
+                                  " from " + str(pos_choice) +"\nDid you complete it?")
+
+    first_sub.pack()
+    yes_button.pack()
+    no_button.pack()
+
+def end_game():
+    global counter
+    global yes_button
+    global no_button
+    global query
+    global first_sub
+    global result
+    #remove all previous widgets
+    first_sub.pack_forget()
+    query.pack_forget()
+    yes_button.pack_forget()
+    no_button.pack_forget()
+
+    #define and print end of program screen
+    game_end = Label(root, text="Thanks for playing.\nYou've completed " + str(counter) + " sub missions.")
+    game_end.pack()
+
+#create widgets at program start
+start_label = Label(root, text="Welcome to the BJJ Sub Mission.\nGi or No Gi today?")
+start_button_gi = Button(root, text="Gi", command=play_gi)
+start_button_nogi = Button(root, text="No Gi", command=play_nogi)
+
+#put widgets on screen at program start
+start_label.pack()
+start_button_gi.pack()
+start_button_nogi.pack()
+
+
+root.mainloop()
