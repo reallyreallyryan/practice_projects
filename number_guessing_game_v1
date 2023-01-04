@@ -1,0 +1,29 @@
+# Number Guessing Game V1 - From Scratch, By Myself
+# This is a complete first draft.
+# Script picks 1 random number, then has player guess.
+# Currently, there are unlimited guesses.
+# Next Version: Limit # of guesses, have it say 'only numbers' if letter is entered.
+# Other ideas: Make computer_choice 2 digits or longer, Add computer hints.
+
+import random
+
+def numberGuessingGame():
+    numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    computer_choice = random.choice(numbers)
+    computer_choice = int(computer_choice)
+    
+    print("I'm thinking of a number between 0 and 9.")
+    player_guess = input("Pick a Number: ")
+    player_guess = int(player_guess)
+
+    while player_guess != computer_choice:
+        if player_guess < computer_choice:
+            player_guess = input("That's too low. Go higher.\nNext Guess: ")
+            player_guess = int(player_guess)
+        elif player_guess > computer_choice:
+            player_guess = input("That's too high. Go lower.\nNext Guess: ")
+            player_guess = int(player_guess)
+
+    return (f'You got it! The correct number was {computer_choice}.')
+
+print(numberGuessingGame())
