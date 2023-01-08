@@ -1,0 +1,56 @@
+# Number Guessing Game V2
+# Added more digits to computer choice
+# Limited the number of Guesses
+# Only responds in numbers are entered
+# Future updates: Adding better computer hints
+
+import random
+
+NUM_GUESSES = 7
+NUM_DIGITS = 2
+
+def main():
+    #Add beginning info/ how to play
+    while True:
+        hidden_Number = hiddenNumber()
+        # Uncomment Below to show answer:
+        #print(f"Hidden Number is: {hidden_Number}")
+        print(f"I have picked a number with {NUM_DIGITS} digits.")
+        print(f"You have {NUM_GUESSES} chances to guess correctly.")
+        numberOfGuesses = 0
+        while numberOfGuesses != NUM_GUESSES:
+            player_guess = ''
+            while len(player_guess) != NUM_DIGITS or not player_guess.isnumeric():
+                print(f"This is Guess {numberOfGuesses + 1}.")
+                player_guess = input("Guess: ")
+            numberOfGuesses += 1
+            clues(hidden_Number, player_guess)
+
+            if player_guess == hidden_Number:
+                print("You won!")
+                break
+            if numberOfGuesses > NUM_GUESSES:
+                print('You ran out of guesses.')
+        break
+    return "Thanks for playing!"
+
+
+def hiddenNumber():
+    numbers = list('0123456789')
+    random.shuffle(numbers)
+    computer_choice = ''
+    computer_choice = str(computer_choice)
+    for i in range(NUM_DIGITS):
+        computer_choice += str(numbers[i])
+    return computer_choice
+
+
+def clues(hidden_Number, player_guess):
+    # Need a function to tell them if they're warm or cold
+    if player_guess < hidden_Number:
+        print("That's too low.")
+    elif player_guess > hidden_Number:
+        print("That's too high.")
+
+
+print(main())
