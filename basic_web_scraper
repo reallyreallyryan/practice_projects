@@ -1,0 +1,19 @@
+# Created a simple web crawler using BeautifulSoup
+# Crawls my board game website to get the products and prices
+
+from bs4 import BeautifulSoup
+import requests
+# Website to request data from:
+html_text = requests.get('https://www.wryknot.com/store').text
+soup = BeautifulSoup(html_text, 'lxml')
+# Finds html class of products
+products = soup.find_all('div', class_ = "grid-main-meta")
+# Iterate through each class to find name/price
+for product in products:
+    name_Product = product.find('div', class_ = "grid-title").text#.replace(" ", "")
+    price_Product = product.find('div', class_ = "grid-prices").text.replace(" ", "")
+    
+    print(f"Product Name: {name_Product.strip()}")
+    print(f"Product Price: {price_Product.strip()}")
+
+    print('')
