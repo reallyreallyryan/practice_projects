@@ -1,0 +1,57 @@
+# This is my attempt at creating a game very close to Blackjack
+# This iteration of it is the base setup of the game
+# I think my code might be a little to dependent on itself to build into
+# I need to learn more about how classes work, maybe?
+
+import random
+
+
+# Create Deck of Cards
+cards = ["2", "3", "4", "5", "6", "7", "8", "9", "10", "0"]
+deck = cards * 4
+
+
+def main_game():
+    # Initial Setup
+    dealer_total = 0
+    player_total = 0
+    dealer_facedown_card = int(random.choice(deck))
+    #print("Facedown card:" + str(dealer_facedown_card))
+
+    dealer_total += int(random.choice(deck))
+    player_total += int(random.choice(deck))
+    player_choice = input(f"Dealer's Total: {dealer_total}\nPlayer's Total: {player_total}\nDo you want to hit or stay?").lower()
+    
+    busted = False
+    # Until player 'Stays' they'll keep being asked if they want to hit or not
+    while player_choice != "s" and player_total <= 21:
+        new_card = int(random.choice(deck))
+        player_total += new_card
+        if player_total > 21:
+            print("You've Busted. Dealer Wins.")
+            busted = True
+            break
+        player_choice = input(f"Dealer's Total: {dealer_total}\nPlayer's Total: {player_total} New card being: {new_card}\nDo you want to hit or stay?").lower()
+
+    # Once player 'Stays', dealer they plays:
+    dealer_total += dealer_facedown_card
+    if busted == False:
+        while dealer_total < 16:
+            dealer_total += int(random.choice(deck))
+            print(f"Dealer Total: {dealer_total}")
+
+        if dealer_total > 21:
+            print("Dealer's Busted. You Win.")
+        elif dealer_total >= player_total:
+            print(f"The winner is: Dealer\nFinal Scores\nDealer: {dealer_total}\nPlayer: {player_total} ")
+        else: 
+            print(f"The winner is: Player\nFinal Scores\nDealer: {player_total}\nPlayer: {dealer_total} ")
+    else:
+        pass
+
+# Starting The Game
+play_game = input("Do you want to play a game? (Y/N)").lower()
+if play_game.startswith("y"):
+    main_game()
+else:
+    print("Maybe next time")
