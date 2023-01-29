@@ -1,0 +1,213 @@
+# Continuing Progress for this variation of a blackjack game
+# This is my first time working with Classes and their methods/attributes
+# Pretty big personal win in understanding how this works and putting it all together
+# Game plays through a fully battle with 1 boss and 1 player, until one runs out of chips
+# Next Goals:
+  # Add 2nd Boss to fight against
+  # Add 2nd Player to game
+
+import random
+
+ROUND = 1
+
+class Card:
+    def __init__(self, suit, number):
+        self.suit = suit
+        self.number = number
+
+    def show(self):
+        print(f"{self.number} of {self.suit}")
+
+    
+class Deck:
+    def __init__(self):
+        self.cards = []
+        self.build()
+    
+    def build(self):
+        for suit in ["A", "B", "C", "D"]:
+            for numb in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]:
+                self.cards.append(Card(suit, numb))
+        deck = random.shuffle(self.cards)
+
+    # Call method to see the built deck
+    def show(self):
+        for card in self.cards:
+            card.show()
+
+    def drawCard(self):
+        return self.cards.pop()
+
+deck = Deck()
+
+                
+class JAK:
+    max_bet = 6
+    min_bet = 1
+
+    def __init__(self, name, health, bet, hand, total):
+        self.name = name
+        self.health = health
+        self.bet = bet
+        self.hand = []
+        self.total = 0
+    
+    def take_bet(self):
+        while self.bet > self.max_bet or self.bet < ROUND:
+            self.bet = input(f"What's your bet {self.name}? Bet: ")
+            if not self.bet.isdecimal():
+                self.bet = input(f"What's your bet {self.name}? Bet: ")
+            self.bet = int(self.bet)
+        return f"You've bet: {self.bet}"
+
+    def data(self):
+        return f"This is {self.name}.\nHealth: {self.health}\nCurrent Bet: {self.bet}\nCurrent Hand: {self.hand}"
+    
+    def draw(self, deck):
+        self.hand.append(deck.drawCard())
+        return self
+    
+    def showHand(self):
+        for card in self.hand:
+            card.show()
+    
+    def jak_total(self):
+        self.total = 0
+        for card in self.hand:
+            self.total += card.number
+        print(self.total)
+
+
+class Boss:
+    def __init__(self, name, health, stay, bust, hand, total):
+        self.name = name
+        self.health = health
+        self.stay = stay
+        self.bust = bust
+        self.hand = []
+        self.total = 0
+    
+    def stats(self):
+        return f"This is {self.name}.\nHealth: {self.health}\nStays at: {self.stay}\nBusts at: {self.bust}\n"
+
+    def draw(self, deck):
+        self.hand.append(deck.drawCard())
+        return self
+    
+    def showHand(self):
+        for card in self.hand:
+            card.show()
+    
+    def boss_total(self):
+        self.total = 0
+        for card in self.hand:
+            self.total += card.number
+        print(self.total)
+        
+
+
+# List of JAKs (Instances of Class)
+bashcan = JAK('Bashcan', 21, 0, [], 0)
+
+
+# List of Bosses (Instances of Class)
+weeze = Boss('Weeze', 24, 18, 23, [], 0)
+
+
+# MAIN GAME LOOP
+
+run = True
+while run:
+    # Intro/ Player Choice
+
+    # Take Bets
+    print(f"\nHowdy {bashcan.name}. This is Round {ROUND}.\nThe minimum bet is {ROUND}.\nYou currently have {bashcan.health} chips remaining.")
+    print(JAK.take_bet(bashcan))
+    print(f"\n{weeze.name} is betting {ROUND}\n")
+
+    # Deal Cards
+    weeze.draw(deck)
+    bashcan.draw(deck)
+    bashcan.draw(deck)
+
+
+    print(f"{weeze.name} is showing:")
+    weeze.showHand()
+    print(f"For a total of:")
+    weeze.boss_total()
+
+
+    print(f"\n{bashcan.name}'s Hand:")
+    bashcan.showHand()
+
+    print(f"For a total score of: ")
+    bashcan.jak_total()
+
+    # Player Options to Hit or Stay
+    while bashcan.total < 22:
+        hit = input("Do you want to Hit or Stay?(h/s)")
+        if hit == 'h':
+            bashcan.draw(deck)
+            print(f"\n{bashcan.name}'s Hand:")
+            bashcan.showHand()
+            print(f"For a total of: ")
+            bashcan.jak_total()
+    
+        elif hit != 's':
+            print("You gotta hit or stay.")
+
+        else:
+            print("You're Total this Round: ", bashcan.total)
+            break
+
+    # Boss Hit or Stay Mechanic
+    while weeze.total < bashcan.total and weeze.total < weeze.stay and bashcan.total < 22:
+        weeze.draw(deck)
+        print(f"\n{weeze.name} hits and is now showing:")
+        weeze.showHand()
+        print(f"For a total of:")
+        weeze.boss_total()
+
+
+    # Winning Round Determined
+    if bashcan.total > 21:
+        bashcan.health -= bashcan.bet
+        bashcan.health -= ROUND
+        print(f"Youve lost this round by busting over 21 with a score of {bashcan.total}")
+        print(f"{bashcan.name} now has {bashcan.health} chips remaining.")
+
+    elif weeze.total > weeze.bust:
+        weeze.health -= ROUND
+        weeze.health -= bashcan.bet
+        print(f"{weeze.name} has busted {weeze.bust} with a score of {weeze.total}")
+        print(f"{weeze.name} now has {weeze.health} chips remaining.")
+
+    elif weeze.total >= bashcan.total:
+        bashcan.health -= ROUND
+        print(f"Youve lost this round {weeze.total} to {bashcan.total}")
+        print(f"{bashcan.name} now has {bashcan.health} chips remaining.")
+
+    else:
+        weeze.health -= ROUND
+        print(f"Youve won this round {bashcan.total} to {weeze.total}")
+        print(f"{weeze.name} now has {weeze.health} chips remaining.")
+
+
+    # Increase the Round Count and Clear Scores and Hands
+    if ROUND != 6:
+        ROUND += 1
+    
+    bashcan.total = 0
+    bashcan.hand = []
+    bashcan.bet = 0
+    weeze.total = 0
+    weeze.hand = []
+    deck = Deck()
+
+    if bashcan.health <= 0:
+        print(f"Well {bashcan.name}, It looks like you've been defeated.\nYou have {bashcan.health} chips remaining.")
+        run = False
+    
+    elif weeze.health <= 0:
+        print(f"Good job {bashcan.name}. You've defeated the boss {weeze.name}")
+        run = False
