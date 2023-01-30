@@ -1,0 +1,320 @@
+# Added 2nd Player and 2nd Boss to Fight
+# Next iteration I'd like to have the number of players be chosen (1 or 2)
+# I'm also trying to have the suits of cards do extra damage if they match a player 'special_suit'
+
+
+import random
+
+ROUND = 1
+
+# Create Classes for Cards, Deck, JAKs, Bosses
+class Card:
+    def __init__(self, suit, number):
+        self.suit = suit
+        self.number = number
+
+    def show(self):
+        print(f"{self.number} of {self.suit}")
+
+class Deck:
+    def __init__(self):
+        self.cards = []
+        self.build()
+    
+    def build(self):
+        for suit in ["A", "B", "C", "D"]:
+            for numb in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]:
+                self.cards.append(Card(suit, numb))
+        deck = random.shuffle(self.cards)
+
+    # Call method to see the built deck
+    def show(self):
+        for card in self.cards:
+            card.show()
+
+    def drawCard(self):
+        return self.cards.pop()
+deck = Deck()
+
+
+class JAK:
+    max_bet = 6
+    min_bet = 1
+
+    def __init__(self, name, health, bet, hand, total, special_suit):
+        self.name = name
+        self.health = health
+        self.bet = bet
+        self.hand = []
+        self.total = 0
+        self.special_suit = ""
+    
+    def take_bet(self):
+        while self.bet > self.max_bet or self.bet < ROUND:
+            self.bet = input(f"What's your bet {self.name}? Bet: ")
+            if not self.bet.isdecimal():
+                self.bet = input(f"What's your bet {self.name}? Bet: ")
+            self.bet = int(self.bet)
+        return f"You've bet: {self.bet}"
+
+    def data(self):
+        return f"This is {self.name}.\nHealth: {self.health}\nCurrent Bet: {self.bet}\nCurrent Hand: {self.hand}"
+    
+    def draw(self, deck):
+        self.hand.append(deck.drawCard())
+        return self
+    
+    def showHand(self):
+        for card in self.hand:
+            card.show()
+    
+    def jak_total(self):
+        self.total = 0
+        for card in self.hand:
+            self.total += card.number
+        print(self.total)
+
+
+class Boss:
+    def __init__(self, name, health, stay, bust, hand, total):
+        self.name = name
+        self.health = health
+        self.stay = stay
+        self.bust = bust
+        self.hand = []
+        self.total = 0
+    
+    def stats(self):
+        return f"This is {self.name}.\nHealth: {self.health}\nStays at: {self.stay}\nBusts at: {self.bust}\n"
+
+    def draw(self, deck):
+        self.hand.append(deck.drawCard())
+        return self
+    
+    def showHand(self):
+        for card in self.hand:
+            card.show()
+    
+    def boss_total(self):
+        self.total = 0
+        for card in self.hand:
+            self.total += card.number
+        print(self.total)
+        
+
+# List of JAKs (Instances of Class)
+bashcan = JAK('Bashcan', 21, 0, [], 0, "A")
+bang_bang = JAK('Bang Bang', 21, 0, [], 0, "B")
+trey = JAK('Trey Boojie', 21, 0, [], 0, "C")
+
+# List of Bosses (Instances of Class)
+weeze = Boss('Weeze', 21, 16, 21, [], 0)
+chrome = Boss('Chrome', 21, 15, 21, [], 0)
+
+boss_group = [weeze, chrome]
+current_boss = random.choice(boss_group)
+
+
+# Intro to Game/ Player Choice
+player_one = None
+player_two = None
+
+# Player One JAK Choice
+print("Welcome to Rusty Justice!\nPlayer One, Please choose your JAK.")
+while player_one != "a" or player_one != "b" or player_one != "c":
+    player_one = input(f"For {bashcan.name} press a\nFor {bang_bang.name} press b\nFor {trey.name} press c\n").lower()
+    while not player_one.isalpha():
+        player_one = input(f"For {bashcan.name} press a\nFor {bang_bang.name} press b\nFor {trey.name} press c").lower()
+    if player_one == "a":
+        player_one = bashcan
+        print(f"Player One is now {bashcan.name}\n")
+        break
+    elif player_one == "b":
+        player_one = bang_bang
+        print(f"Player One is now {bang_bang.name}\n")
+        break
+    elif player_one == "c":
+        player_one = trey
+        print(f"Player One is now {trey.name}\n")
+        break
+
+# Player Two JAK Choice
+print("Welcome to Rusty Justice!\nPlayer Two, Please choose your JAK.")
+while player_two != "a" or player_two != "b" or player_two != "c":
+    player_two = input(f"For {bashcan.name} press a\nFor {bang_bang.name} press b\nFor {trey.name} press c\n").lower()
+    while not player_two.isalpha():
+        player_two = input(f"For {bashcan.name} press a\nFor {bang_bang.name} press b\nFor {trey.name} press c").lower()
+    if player_two == "a":
+        player_two = bashcan
+        print(f"Player Two is now {bashcan.name}\n")
+        break
+    elif player_two == "b":
+        player_two = bang_bang
+        print(f"Player Two is now {bang_bang.name}\n")
+        break
+    elif player_two == "c":
+        player_two = trey
+        print(f"Player Two is now {trey.name}\n")
+        break
+
+
+
+# MAIN GAME LOOP
+run = True
+while run:
+    #current_boss = current_boss    
+
+    # Take Bets
+    print(f"\nHowdy {player_one.name}. This is Round {ROUND}.\nThe minimum bet this round is {ROUND}.\nYou currently have {player_one.health} chips remaining.")
+    print(JAK.take_bet(player_one))
+
+    print(f"\nHowdy {player_two.name}. This is Round {ROUND}.\nThe minimum bet this round is {ROUND}.\nYou currently have {player_two.health} chips remaining.")
+    print(JAK.take_bet(player_two))
+    print(f"\n{current_boss.name} is betting {ROUND}\n")
+
+
+
+    # Deal Initial Cards
+    current_boss.draw(deck)
+    player_one.draw(deck)
+    player_one.draw(deck)
+
+    player_two.draw(deck)
+    player_two.draw(deck)
+
+    
+    #Boss Hand
+    print(f"{current_boss.name} is showing:")
+    current_boss.showHand()
+    print(f"For a total of:")
+    current_boss.boss_total()
+
+
+    #Player One Hand
+    print(f"\n{player_one.name}'s Hand:")
+    player_one.showHand()
+    print(f"For a total score of: ")
+    player_one.jak_total()
+
+    # Player One Options to Hit or Stay
+    while player_one.total < 22:
+        hit = input("Do you want to Hit or Stay?(h/s)")
+        if hit == 'h':
+            player_one.draw(deck)
+            print(f"\n{player_one.name}'s Hand:")
+            player_one.showHand()
+            print(f"For a total of: ")
+            player_one.jak_total()
+        elif hit != 's':
+            print("You gotta hit or stay.")
+        else:
+            print("You're Total this Round: ", player_one.total)
+            break
+
+    #Player Two Hand
+    print(f"\n{player_two.name}'s Hand:")
+    player_two.showHand()
+    print(f"For a total score of: ")
+    player_two.jak_total()
+
+    # Player Two Options to Hit or Stay
+    while player_two.total < 22:
+        hit = input("Do you want to Hit or Stay?(h/s)")
+        if hit == 'h':
+            player_two.draw(deck)
+            print(f"\n{player_two.name}'s Hand:")
+            player_two.showHand()
+            print(f"For a total of: ")
+            player_two.jak_total()
+        elif hit != 's':
+            print("You gotta hit or stay.")
+        else:
+            print("You're Total this Round: ", player_two.total)
+            break
+
+
+    # Boss Hit or Stay Mechanic
+    while current_boss.total < current_boss.stay and player_one.total < 22:
+        current_boss.draw(deck)
+        print(f"\n{current_boss.name} hits and is now showing:")
+        current_boss.showHand()
+        print(f"For a total of:")
+        current_boss.boss_total()
+
+
+    # Winning Round Results 
+    # Player One Busts
+    if player_one.total > 21:
+        player_one.health -= player_one.bet
+        player_one.health -= ROUND
+        print(f"{player_one.name} youve lost this round by busting over 21 with a score of {player_one.total}")
+        print(f"{player_one.name} now has {player_one.health} chips remaining.")
+    # Player Two Busts
+    if player_two.total > 21:
+        player_two.health -= player_two.bet
+        player_two.health -= ROUND
+        print(f"{player_two.name} youve lost this round by busting over 21 with a score of {player_two.total}")
+        print(f"{player_two.name} now has {player_two.health} chips remaining.")
+    # Current Boss Busts
+    if current_boss.total > current_boss.bust:
+        current_boss.health -= ROUND
+        current_boss.health -= player_one.bet
+        print(f"{current_boss.name} has busted {current_boss.bust} with a score of {current_boss.total}")
+        print(f"{current_boss.name} now has {current_boss.health} chips remaining.")
+
+    # Boss beats Player One
+    if current_boss.total >= player_one.total and current_boss.total < (current_boss.bust +1):
+        player_one.health -= ROUND
+        print(f"{player_one.name} youve lost this round {current_boss.total} to {player_one.total}")
+        print(f"{player_one.name} now has {player_one.health} chips remaining.")
+    # Boss beats Player Two
+    if current_boss.total >= player_two.total and current_boss.total < (current_boss.bust +1):
+        player_two.health -= ROUND
+        print(f"{player_two.name} youve lost this round {current_boss.total} to {player_two.total}")
+        print(f"{player_two.name} now has {player_two.health} chips remaining.")
+
+    # Player One beats Boss
+    if player_one.total > current_boss.total and player_one.total < 22:
+        current_boss.health -= ROUND
+        current_boss.health -= player_one.bet
+        print(f"Youve won this round {player_one.name} with a score of {player_one.total} to {current_boss.total}")
+        print(f"{current_boss.name} now has {current_boss.health} chips remaining.")
+    # Player Two beats Boss
+    if player_two.total > current_boss.total and player_two.total < 22:
+        current_boss.health -= ROUND
+        current_boss.health -= player_two.bet
+        print(f"Youve won this round {player_two.name} with a score of {player_two.total} to {current_boss.total}")
+        print(f"{current_boss.name} now has {current_boss.health} chips remaining.")
+
+    # Increase the Round Count and Clear Scores/Hands
+    if ROUND != 6:
+        ROUND += 1
+    
+    player_one.total = 0
+    player_one.hand = []
+    player_one.bet = 0
+    player_two.total = 0
+    player_two.hand = []
+    player_two.bet = 0
+
+    current_boss.total = 0
+    current_boss.hand = []
+    deck = Deck()
+
+    # End of Game / Player Defeated
+    if player_one.health <= 0 or player_two.health <= 0:
+        print(f"Well {player_one.name} and {player_two.name}, It looks like you've been defeated.\nThanks for playing.")
+        run = False
+    
+    elif current_boss.health <= 0:
+        print(f"Good job {player_one.name} and {player_two.name}. You've defeated the boss {current_boss.name}")
+        boss_group.remove(current_boss)
+        if len(boss_group) > 0:
+            current_boss = random.choice(boss_group)
+            print(f"The next Boss you're facing is {current_boss.name}. Good Luck.")
+            ROUND = 1
+            player_one.health = 21
+            player_two.health = 21
+        else:
+            print(f"{current_boss.name} was your final challenge.\nYou've defeated all the bosses. You won.")
+            run = False
