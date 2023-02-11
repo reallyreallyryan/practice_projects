@@ -1,0 +1,117 @@
+# Current Challenge:
+#   I need to make the card that is drawn show in the spot of the dealer card frame
+# Made it work, sort of. We'll see how this path turns out
+
+
+import pygame
+import random
+
+pygame.init()
+
+# Create Window
+screen_width = 700
+screen_height = 700
+screen = pygame.display.set_mode(size=(screen_width,screen_height))
+pygame.display.set_caption("RJ PygameV1")
+screen.fill((40,130,80))
+    #Create Font for Text on Screen
+font = pygame.font.Font('freesansbold.ttf', 16)
+
+
+class Card:
+    def __init__(self, suit, number):
+        self.suit = suit
+        self.number = number
+
+# NEED TO:
+#   Figure out a way to have each card and text print on screen seperately 
+    def showTextOne(self):
+        print(str(f"{self.number} of {self.suit}"))
+        cardOne_box = pygame.draw.rect(screen, (60, 60, 60), (150, 250, 100, 150))
+        cardOne_text = font.render(str(f"{self.number} of {self.suit}"), True, (0,0,0))
+        screen.blit(cardOne_text, cardOne_box)
+        #cardTwo_box = pygame.draw.rect(screen, (60, 60, 60), (350, 250, 100, 150))
+        #cardTwo_text = font.render(str(f"{self.number} of {self.suit}"), True, (0,0,0))
+        #screen.blit(cardTwo_text, cardTwo_box)
+
+    #def showTextTwo(self):
+
+    
+class Deck:
+    def __init__(self):
+        self.cards = []
+        self.build()
+
+    def build(self):
+        for suit in ["A", "B", "C", "D"]:
+            for numb in [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]:
+                self.cards.append(Card(suit, numb))
+        deck = random.shuffle(self.cards)
+    
+    def show(self):
+        for card in self.cards:
+            card.showText()
+
+    def drawCard(self):
+        return self.cards.pop()
+
+deck = Deck()
+#deck.show()
+#print(dealer_hand, dealer_stg)
+
+class JAK:
+    def __init__(self, hand, total):
+        self.hand = []
+        self.total = 0
+
+
+    def dealInitialHand(self, deck):
+        cardOne = self.hand.append(deck.drawCard())
+        #cardTwo = self.hand.append(deck.drawCard())
+
+    def showHand(self):
+        for card in self.hand:
+            if len(self.hand) < 2:
+                card.showTextOne()
+            #card.showTextTwo()
+
+# Instances of JAK Class
+player_one = JAK([], 0)
+
+
+
+# Draw Inital Dealer Text and Rules on Screen
+def draw():
+    # Draw Dealer Score Box
+    dealer_score_label = pygame.draw.rect(screen, (250,250,250), (200, 20, 200,25))
+    dealer_score_box = font.render("Dealer Score:", True, (0,0,0))
+    screen.blit(dealer_score_box, dealer_score_label)
+    # Draw Rules Box
+    rule_guide = pygame.draw.rect(screen, (250,250,250), (150, 475, 300,25))
+    rule_text = font.render("Press d to deal", True, (0,0,0))
+    screen.blit(rule_text, rule_guide)
+
+    
+
+
+
+# Main Game Loop
+run = True
+while run == True:
+    
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            run = False
+    
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_d:    
+                player_one.dealInitialHand(deck)
+                player_one.showHand()
+
+    draw()
+    
+
+    
+    pygame.display.update()
+
+pygame.quit()
