@@ -1,5 +1,5 @@
 # Current Challenge:
-
+#   Add Betting to the Game
 
 
 import pygame
@@ -111,9 +111,10 @@ deck = Deck()
 #deck.show()
 
 class JAK:
-    def __init__(self, hand, total):
+    def __init__(self, hand, total, bet):
         self.hand = []
         self.total = 0
+        self.bet = 0 
 
     def dealInitialHand(self, deck):
         cardOne = self.hand.append(deck.drawCard())
@@ -141,7 +142,6 @@ class JAK:
             card.showTextFive()
 
     
-
     def jak_total(self):
         # Calculates and Shows Player Total
         self.total = 0
@@ -157,8 +157,16 @@ class JAK:
             playerOneTotalText = font.render(f"Player One Total: BUSTED", True, (0,0,0))
             screen.blit(playerOneTotalText, playerOneTotalBox)
 
+    def place_bet(self):
+        self.bet = 0
+        # Need to have it ask on the screen for bet 1-6
+        # Draw box on screen and just have it ask 1-6, then have keydowns that deal with the bet
+        placeBetBox = pygame.draw.rect(screen, (250,250,250), (300, 300, 200, 25))
+        placeBetText = font.render("Place your bet: 1-6", True, (0,0,0))
+        screen.blit(placeBetText, placeBetBox)
+
 # Instances of JAK Class
-player_one = JAK([], 0)
+player_one = JAK([], 0, 0)
 
 
 class Dealer:
@@ -226,20 +234,34 @@ HIT_COUNTER = 0
 # Main Game Loop
 run = True
 while run == True:
-    
+
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
+        # If player busts que them to start new round
+        if player_one.total > 21:
+            winner_score_label = pygame.draw.rect(screen, (250,250,250), (100, 475, 550, 40))
+            winner_score_box = font.render(f"Player has busted. Press c to start new round", True, (0,0,0))
+            screen.blit(winner_score_box, winner_score_label)
+        
+          # Deals out initial cards to dealer and player  
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_d:
                 #Show Players first two cards and total 
                 player_one.dealInitialHand(deck)
                 player_one.secondCard(deck)
                 player_one.jak_total()
+                player_one.place_bet()
                 # Show Dealer first card:
                 boss_one.DealerInitalCard(deck)
                 boss_one.dealer_total()
+            # Player betting 1-6
+            if event.key == pygame.K_1:
+                player_one.bet = 1
+                placeBetBox = pygame.draw.rect(screen, (40,180,30), (300, 300, 200, 25))
+                placeBetText = font.render(f"Current Bet: {player_one.bet}", True, (0,0,0))
+                screen.blit(placeBetText, placeBetBox)
+
             # Player Hitting
             if event.key == pygame.K_h:
                 if HIT_COUNTER == 0:
@@ -256,36 +278,47 @@ while run == True:
                     HIT_COUNTER += 1
                 else:
                     pass
-            # if "s" is pressed, player stays, show/draw dealer cards
-            if event.key == pygame.K_s:
-                if boss_one.total <= 15:
-                    boss_one.showSecondCard(deck)
-                    boss_one.dealer_total()
+
+            # If the player stays OR if the player has hit for 5 cards
+            # Deal cards until the dealer reaches at least 15
+            # As long as they player has not busted
+            if player_one.total <= 21:
+                if event.key == pygame.K_s or HIT_COUNTER == 3:
+
+                    if boss_one.total <= 15:
+                        boss_one.showSecondCard(deck)
+                        boss_one.dealer_total()
+                
+                    if boss_one.total <= 15:
+                        boss_one.showThirdCard(deck)
+                        boss_one.dealer_total()
+                    
+                    if boss_one.total <= 15:
+                        boss_one.showFourthCard(deck)
+                        boss_one.dealer_total()
+                    
+                    if boss_one.total <= 15:
+                        boss_one.showFifthCard(deck)
+                        boss_one.dealer_total()
+                    
+                    # If boss busts:
+                    if boss_one.total > 21:
+                        winner_score_label = pygame.draw.rect(screen, (250,250,250), (100, 475, 550, 60))
+                        winner_score_box = font.render(f"The Dealer has Busted. Player Wins. Press c for next round", True, (0,0,0))
+                        screen.blit(winner_score_box, winner_score_label)
             
-                if boss_one.total <= 15:
-                    boss_one.showThirdCard(deck)
-                    boss_one.dealer_total()
-                
-                if boss_one.total <= 15:
-                    boss_one.showFourthCard(deck)
-                    boss_one.dealer_total()
-                
-                if boss_one.total <= 15:
-                    boss_one.showFifthCard(deck)
-                    boss_one.dealer_total()
-        
-                if boss_one.total >= player_one.total and boss_one.total <= 21:
-                    winner_score_label = pygame.draw.rect(screen, (250,250,250), (100, 475, 550, 60))
-                    winner_score_box = font.render(f"Dealer Score: {boss_one.total}, Player Score: {player_one.total}. Dealer wins. Press c for Next Round", True, (0,0,0))
-                    screen.blit(winner_score_box, winner_score_label)
+                    if boss_one.total >= player_one.total and boss_one.total <= 21:
+                        winner_score_label = pygame.draw.rect(screen, (250,250,250), (100, 475, 550, 60))
+                        winner_score_box = font.render(f"Dealer Score: {boss_one.total}, Player Score: {player_one.total}. Dealer wins. Press c for Next Round", True, (0,0,0))
+                        screen.blit(winner_score_box, winner_score_label)
 
-                if player_one.total > boss_one.total and player_one.total <= 21:
-                    winner_score_label = pygame.draw.rect(screen, (250,250,250), (150, 475, 400,25))
-                    winner_score_box = font.render(f"Dealer Score: {boss_one.total}, Player Score: {player_one.total}. Player wins.", True, (0,0,0))
-                    screen.blit(winner_score_box, winner_score_label)
+                    if player_one.total > boss_one.total and player_one.total <= 21:
+                        winner_score_label = pygame.draw.rect(screen, (250,250,250), (100, 475, 550, 60))
+                        winner_score_box = font.render(f"Dealer Score: {boss_one.total}, Player Score: {player_one.total}. Player wins. Press c for Next Round", True, (0,0,0))
+                        screen.blit(winner_score_box, winner_score_label)
                 
 
-
+        # Starts new round 
             if event.key == pygame.K_c:
                 screen.fill((40,130,80))
                 if ROUND != 6:
@@ -295,6 +328,7 @@ while run == True:
                 player_one.hand = []
                 boss_one.total = 0
                 boss_one.hand = []
+                HIT_COUNTER = 0
                 deck = Deck()
 
             
